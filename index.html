@@ -83,14 +83,6 @@
       color: #ffffff;
     }
 
-    video {
-      width: 100%;
-      max-width: 800px;
-      border-radius: 10px;
-      display: block;
-      margin: 20px auto;
-    }
-
     .video-info {
       max-width: 800px;
       margin: 0 auto 40px auto;
@@ -110,6 +102,15 @@
       font-size: 14px;
       color: #ccc;
     }
+
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 450px;
+      display: block;
+      margin: 20px auto;
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -128,7 +129,6 @@
         id: "GYGIVAb5s4U", 
         title: "Test1", 
         channel: "BliBlue", 
-        src: "test.mp4",
         description: "Este é um vídeo de teste para o BliBlue."
       },
     ];
@@ -158,10 +158,13 @@
 
       history.pushState({}, "", "/watch-" + id);
       app.innerHTML = `
-        <video controls autoplay>
-          <source src="${video.src}" type="video/mp4">
-          Seu navegador não suporta vídeo.
-        </video>
+        <iframe 
+          src="https://www.youtube.com/embed/${video.id}?autoplay=1" 
+          title="${video.title}" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
         <div class="video-info">
           <h2>${video.title}</h2>
           <p><b>Canal:</b> ${video.channel}</p>
