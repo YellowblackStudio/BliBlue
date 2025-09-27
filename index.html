@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BliBlue</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #d8d8d8;
+      color: white;
+      margin: 0;
+    }
+
+    header {
+      background: #919191;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #1100ff;
+    }
+
+    header span {
+      cursor: pointer;
+    }
+
+    .publish-btn {
+      background: #1100ff;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .publish-btn:hover {
+      background: #0031aa;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 15px;
+      padding: 15px;
+    }
+
+    .video-card {
+      background: #1a1a1a;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .video-card:hover {
+      background: #333;
+    }
+    .thumb {
+      width: 100%;
+      border-radius: 8px;
+      background: #444;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: #bbb;
+    }
+    .title {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .channel {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #ffffff;
+    }
+
+    video {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 10px;
+      display: block;
+      margin: 20px auto;
+    }
+
+    .video-info {
+      max-width: 800px;
+      margin: 0 auto 40px auto;
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .video-info h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      color: #fff;
+    }
+
+    .video-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span onclick="goHome()">BliBlue</span>
+    <a href="https://forms.gle/z5dZXhAaPgLAziw59" target="_blank" class="publish-btn">Publicar vídeo</a>
+  </header>
+
+  <div id="app"></div>
+
+  <script>
+    // Base de vídeos
+    const videos = [
+      { 
+        id: "GYGIVAb5s4U", 
+        title: "Test1", 
+        channel: "BliBlue", 
+        src: "test.mp4",
+        description: "Este é um vídeo de teste para o BliBlue."
+      },
+    ];
+
+    const app = document.getElementById("app");
+
+    // Renderiza a home
+    function renderHome() {
+      history.pushState({}, "", "/");
+      app.innerHTML = `
+        <div class="grid">
+          ${videos.map(v => `
+            <div class="video-card" onclick="watch('${v.id}')">
+              <div class="thumb">▶</div>
+              <div class="title">${v.title}</div>
+              <div class="channel">${v.channel}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    // Renderiza a página de vídeo
+    function watch(id) {
+      const video = videos.find(v => v.id === id);
+      if (!video) return;
+
+      history.pushState({}, "", "/watch-" + id);
+      app.innerHTML = `
+        <video controls autoplay>
+          <source src="${video.src}" type="video/mp4">
+          Seu navegador não suporta vídeo.
+        </video>
+        <div class="video-info">
+          <h2>${video.title}</h2>
+          <p><b>Canal:</b> ${video.channel}</p>
+          <p>${video.description}</p>
+        </div>
+      `;
+    }
+
+    // Voltar para home clicando no header
+    function goHome() {
+      renderHome();
+    }
+
+    // Detecta URL atual
+    function checkRoute() {
+      if (location.pathname.startsWith("/watch-")) {
+        const id = location.pathname.replace("/watch-", "");
+        watch(id);
+      } else {
+        renderHome();
+      }
+    }
+
+    // Ao carregar a página
+    checkRoute();
+
+    // Quando usar o botão voltar/avançar do navegador
+    window.onpopstate = checkRoute;
+  </script>
+
+</body>
+</html>
